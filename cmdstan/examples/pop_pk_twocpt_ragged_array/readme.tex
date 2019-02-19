@@ -1,4 +1,4 @@
-% Created 2019-02-19 Tue 14:47
+% Created 2019-02-19 Tue 14:55
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -31,7 +31,7 @@
 \maketitle
 
 \section{Build}
-\label{sec:orgca90792}
+\label{sec:org4d22419}
 Torsten's \texttt{pop\_pk\_generalOdeModel\_bdf}, \texttt{pop\_pk\_generalOdeModel\_adams},
 \texttt{pop\_pk\_generalOdeModel\_rk45} functions support MPI
 runs. To build a Stan model that utilizes these functions in \texttt{cmdstan},
@@ -47,8 +47,10 @@ CXX=mpicxx
 
 and make the model file from \texttt{cmdstan} folder.
 
+This feature is currently not available to \texttt{R} interface.
+
 \section{Run}
-\label{sec:orgeaa48b0}
+\label{sec:orgffbfe0d}
 To run the current model \texttt{pop\_pk\_twocpt}, in the model
 folder, do
 \begin{minted}[breaklines=true,fontsize=\footnotesize,breakanywhere=true]{bash}
@@ -60,7 +62,7 @@ population size is 2, adding more processes will not benefit
 the solution.
 
 \section{Load balancing}
-\label{sec:org2f92a7c}
+\label{sec:orgba6d78c}
 Torsten's MPI solvers use static balancing to
 distribute the load. For a model with population size 4, 
 if we solve it using

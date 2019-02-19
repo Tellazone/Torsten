@@ -17,6 +17,8 @@ CXX=mpicxx
 
 and make the model file from =cmdstan= folder.
 
+This feature is currently not available to =R= interface.
+
 * Run
 To run the current model =pop_pk_twocpt=, in the model
 folder, do
