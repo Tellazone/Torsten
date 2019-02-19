@@ -1,0 +1,106 @@
+% Created 2019-02-19 Tue 14:47
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage{caption}
+\author{Yi Zhang}
+\date{\today}
+\title{How to build \& run Torsten's MPI jobs}
+\hypersetup{
+ pdfauthor={Yi Zhang},
+ pdftitle={How to build \& run Torsten's MPI jobs},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 25.3.1 (Org mode 9.1.3)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Build}
+\label{sec:orgca90792}
+Torsten's \texttt{pop\_pk\_generalOdeModel\_bdf}, \texttt{pop\_pk\_generalOdeModel\_adams},
+\texttt{pop\_pk\_generalOdeModel\_rk45} functions support MPI
+runs. To build a Stan model that utilizes these functions in \texttt{cmdstan},
+add the following to \texttt{cmdstan/make/local}
+\begin{minted}[breaklines=true,fontsize=\footnotesize,breakanywhere=true]{makefile}
+TORSTEN_MPI = 1
+-include $(MATH)make/setup_torsten.mk
+CXXFLAGS += $(CXXFLAGS_MPI) -isystem /usr/local/include
+LDFLAGS += $(LDFLAGS_MPI)
+CC=mpicxx
+CXX=mpicxx
+\end{minted}
+
+and make the model file from \texttt{cmdstan} folder.
+
+\section{Run}
+\label{sec:orgeaa48b0}
+To run the current model \texttt{pop\_pk\_twocpt}, in the model
+folder, do
+\begin{minted}[breaklines=true,fontsize=\footnotesize,breakanywhere=true]{bash}
+mpiexec -n 2 ./pop_pk_twocpt sample num_samples=250 num_warmup=250 data file=pop_pk_twocpt.data.R init=pop_pk_twocpt.init.R
+\end{minted}
+
+Here we are running the job using 2 processes. Since the
+population size is 2, adding more processes will not benefit
+the solution.
+
+\section{Load balancing}
+\label{sec:org2f92a7c}
+Torsten's MPI solvers use static balancing to
+distribute the load. For a model with population size 4, 
+if we solve it using
+2 processes by issuing \texttt{mpiexec -n 2},
+the load will be
+distributed as
+\begin{center}
+\begin{tabular}{rl}
+process & individual\\
+\hline
+1 & 1, 2\\
+2 & 3, 4\\
+\end{tabular}
+\end{center}
+
+If we solve it using
+3 processes by issuing \texttt{mpiexec -n 3}, the load will be
+distributed as
+\begin{center}
+\begin{tabular}{rr}
+process & individual\\
+\hline
+1 & 1, 2\\
+2 & 3\\
+3 & 4\\
+\end{tabular}
+\end{center}
+
+If we solve it using
+5 processes by issuing \texttt{mpiexec -n 5}, the load will be
+distributed as
+\begin{center}
+\begin{tabular}{rr}
+process & individual\\
+\hline
+1 & 1\\
+2 & 2\\
+3 & 3\\
+4 & 4\\
+5 & idle\\
+\end{tabular}
+\end{center}
+\end{document}
