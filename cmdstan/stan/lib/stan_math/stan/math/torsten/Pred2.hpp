@@ -385,7 +385,7 @@ namespace torsten{
      */
     template<typename T0, typename T1, typename T2, typename T3, typename T4,
              typename T5, typename T6, typename... Ts,
-             typename std::enable_if_t<!stan::is_var<T1>::value >* = nullptr>
+             typename std::enable_if_t<stan::is_var<typename EventsManager<T0, T1, T2, T3, T4, T5, T6>::T_scalar>::value >* = nullptr>
     static void pred(int nCmt,
                      const std::vector<int>& len,
                      const std::vector<T0>& time,
