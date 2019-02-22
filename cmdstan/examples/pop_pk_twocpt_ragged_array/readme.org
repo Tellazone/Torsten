@@ -9,7 +9,7 @@ add the following to =cmdstan/make/local=
 #+BEGIN_SRC makefile
 TORSTEN_MPI = 1
 -include $(MATH)make/setup_torsten.mk
-CXXFLAGS += $(CXXFLAGS_MPI) -isystem /usr/local/include
+CXXFLAGS += $(CXXFLAGS_MPI) -isystem /usr/local/mpich3/include
 LDFLAGS += $(LDFLAGS_MPI)
 CC=mpicxx
 CXX=mpicxx
